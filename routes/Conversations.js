@@ -1,4 +1,4 @@
-const { Conversations } = require('../config/db');
+const { Conversations,db } = require('../config/db');
 const router = require('express').Router();
 
 
@@ -25,12 +25,13 @@ router.post("/",(req,res) => {
     }
 })
 
-router.get("/:address",(req,res) => {
+router.get("/:address",async(req,res) => {
     try {
         const address = req.params.address;
         const conversations = Conversations.get({$includes:{members:address}})
         if(conversations){
-            res.status(200).json(conversations)
+            const url = await db.getIPFS(true)
+            res.status(200).json({conversations,url})
         }
         else {
             res.status(200).json({error:"Not Found"})
