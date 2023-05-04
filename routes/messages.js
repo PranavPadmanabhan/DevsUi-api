@@ -2,7 +2,7 @@ const { Conversations } = require('../config/db');
 
 const router = require('express').Router();
 
-router.post("/:conversationId", (req, res) => {
+router.post("/:conversationId", async(req, res) => {
     const { message, walletaddress } = req.body;
     if (message && walletaddress) {
         try {

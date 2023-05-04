@@ -14,5 +14,4 @@ const db = new W3dbV2(config);
 const Conversations = db.collection('conversations');
 const Users = db.collection("Users");
 
-
 module.exports = { db,Conversations,Users }
