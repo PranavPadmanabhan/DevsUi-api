@@ -1,34 +1,29 @@
-const { Users } = require('../config/db');
 
 const router = require('express').Router();
+const User = require("../models/users")
+const { v4: uuidv4 } = require('uuid');
 
-
-
-router.post("/signup", (req, res) => {
-    const { name, profileimage, username, walletaddress } = req.body
-    if (name && profileimage && username && walletaddress) {
+router.post("/signup", async(req, res) => {
+    const { name, username, walletaddress, email } = req.body
+    if (name && username && walletaddress && email) {
         try {
-            const user = Users.get({ walletaddress });
-            if (user) {
-                res.status(200).json({ error: "User Already Exists" })
+            const user = await User.findOne({$or:[
+                {walletaddress},
+                {email}
+            ]})
+            if(user){
+                res.status(200).json({error : "User Already Exists"})
             }
             else {
-                const newUser = {
+                const newUser = new User({
+                    userId:uuidv4(),
                     name,
-                    userId: (Math.random() * 1e18).toString(),
-                    username,
-                    walletaddress,
-                    profileimage,
-                    blocklist: [],
-                    blockedby: []
-                }
-                const doc = Users.add(newUser);
-                if (doc._id) {
-                    res.status(201).json(doc)
-                }
-                else {
-                    res.status(200).json({ error: "Something Went wrong" })
-                }
+                    email,
+                    userName:username,
+                    walletAddress:walletaddress
+                })
+                const userData = await newUser.save();
+                res.status(201).json(userData)
             }
         } catch (error) {
             res.status(200).json({ error: error.message })
@@ -40,17 +35,17 @@ router.post("/signup", (req, res) => {
 })
 
 
-router.post("/signin", (req, res) => {
+router.post("/signin", async(req, res) => {
     const { walletaddress } = req.body
     if (walletaddress) {
         try {
-            const user = Users.get({ walletaddress });
-            if (user) {
-                res.status(200).json(user)
-            }
-            else {
-                res.status(200).json({ error: "User Not Found" })
-            }
+           const user = await User.findOne({walletAddress:walletaddress})
+           if(user){
+            res.status(200).json(user)
+           }
+           else {
+            res.status(200).json({ error : "User Not Found!! "})
+           }
         } catch (error) {
             res.status(200).json({ error: error.message })
 

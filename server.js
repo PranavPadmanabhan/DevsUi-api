@@ -1,9 +1,11 @@
 const express = require('express');
 const cors = require("cors")
+const mongoose = require("mongoose")
 require("dotenv").config()
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const MONGO_URL=process.env.MONGO_URL;
 
 // MIDDLEWARES
 app.use(express.json())
@@ -18,6 +20,9 @@ app.use("/messages",require("./routes/messages.js"))
 app.get("/",(req,res) => {
     res.status(200).json({ message: "home" })
 })
+
+
+ mongoose.connect(MONGO_URL).then(() => console.log('mongoDB connection successful..'))
 
 
 // LISTENERS

@@ -1,32 +1,30 @@
-const { Conversations } = require('../config/db');
+const conversations = require('../models/conversations');
 
 const router = require('express').Router();
+const { v4: uuidv4 } = require('uuid');
+
 
 router.post("/:conversationId", async(req, res) => {
     const { message, walletaddress } = req.body;
-    if (message && walletaddress) {
+    const conversationId = req.params.conversationId
+    if (message && walletaddress && conversationId) {
         try {
-            const conversationId = req.params.conversationId
-            const conversation = Conversations.get({ conversationId })
-            const isValidMember = conversation.members.includes(walletaddress)
-            if (conversation && isValidMember) {
-                const newMessage = {
-                    messageId: (Math.random() * 1e18).toString(),
-                    sender: walletaddress,
-                    message,
-                    timestamp: Date.now()
-                }
-                const doc = Conversations.update({ conversationId }, { messages: [...conversation.messages, newMessage] })
-                if (doc) {
-                    res.status(201).json(doc)
-                }
-                else {
-                    res.status(200).json({ error: "Something went wrong" })
-                }
+            const newMessage = {
+                messageId:uuidv4(),
+                message,
+                sender:walletaddress,
+                timestamp:Date.now(),
+            }
+            const conversation = await conversations.findOne({ conversationId});
+            if(conversation){
+                conversation.messages = [...conversation.messages,newMessage];
+            const conversationData = await conversation.save();
+            res.status(201).json(conversationData)
             }
             else {
-                res.status(200).json({ error: "Not authorized" })
+                res.status(200).json({error:" Conversation Not Found!!"})
             }
+
         } catch (error) {
 
         }
