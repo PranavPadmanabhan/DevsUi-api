@@ -33,7 +33,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:address", async(req, res) => {
     try {
-        const conversations = await Conversations.findOne({ members: { $in: members } });
+        const conversations = await Conversations.findOne({ members: { $in: [req.params.address] } });
         if(conversations){
             res.status(201).json(conversations)
         }
