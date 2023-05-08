@@ -8,8 +8,9 @@ router.post("/signup", async(req, res) => {
     if (name && username && walletaddress && email) {
         try {
             const user = await User.findOne({$or:[
-                {walletaddress},
-                {email}
+                {walletAddress:walletaddress},
+                {email},
+                {userName:username}
             ]})
             if(user){
                 res.status(200).json({error : "User Already Exists"})
