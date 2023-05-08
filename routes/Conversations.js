@@ -7,19 +7,18 @@ router.post("/", async (req, res) => {
     const { members, walletaddress } = req.body;
     if (members.length >= 2 && walletaddress) {
         try {
-            const conversation = await Conversations.findOne({ members: { $in: members } });
+            const conversation = await Conversations.findOne({ members: members });
             if (conversation) {
                 res.status(200).json({ error: "Conversation Exists" })
             }
             else {
                 const newConvo = new Conversations({
                     conversationId: uuidv4(),
-                    blocked: false,
                     members,
                     messages: []
                 })
                 await newConvo.save()
-                const conversations = await Conversations.findOne({ members: { $in: members } });
+                const conversations = await Conversations.findOne({ members: { $in: [walletaddress] } });
                 res.status(201).json(conversations)
             }
         } catch (error) {
@@ -33,7 +32,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:address", async(req, res) => {
     try {
-        const conversations = await Conversations.findOne({ members: { $in: [req.params.address] } });
+        const conversations = await Conversations.find({ members: { $in: [req.params.address] } });
         if(conversations){
             res.status(201).json(conversations)
         }
