@@ -56,4 +56,26 @@ router.post("/signin", async(req, res) => {
     }
 })
 
+
+router.get("/users/:userName",async(req,res) => {
+    const { userName } = req.params
+    if (userName) {
+        try {
+           const user = await User.findOne({userName})
+           if(user){
+            res.status(200).json({error:"username not Available"})
+           }
+           else {
+            res.status(200).json({ message : "userName available "})
+           }
+        } catch (error) {
+            res.status(200).json({ error: error.message })
+
+        }
+    }
+    else {
+        res.status(200).json({ error: "fields are missing!" })
+    }
+})
+
 module.exports = router
