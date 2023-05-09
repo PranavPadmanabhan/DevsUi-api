@@ -6,11 +6,20 @@ const users = require('../models/users');
 
 router.post("/", async (req, res) => {
     const { walletaddress,receiver } = req.body;
-    if ( walletaddress &&receiver ) {
+    if (walletaddress?.trim().length!==0 && receiver?.trim().length!==0) {
         try {
             const receiverAcc = await users.findOne({walletAddress:receiver})
             const sender = await users.findOne({walletAddress:walletaddress})
-            const conversation = await Conversations.findOne({ members: members });
+            const conversation = await Conversations.findOne({ members: [
+                {
+                    name:sender.name,
+                    address:walletaddress
+                },
+                {
+                    name:receiverAcc?.name,
+                    address:receiver
+                }
+            ] });
             if (conversation) {
                 res.status(200).json({ error: "Conversation Exists" })
             }
@@ -33,8 +42,7 @@ router.post("/", async (req, res) => {
                     messages: []
                 })
                 await newConvo.save()
-                const filtered = members.filter(item => item.address === walletaddress)
-                const conversations = await Conversations.findOne({ members: { $in: [filtered[0]] } });
+                const conversations = await Conversations.findOne({ members: { $in: walletaddress } });
                 res.status(201).json(conversations)
             }
         } catch (error) {

@@ -9,7 +9,7 @@ const MONGO_URL=process.env.MONGO_URL;
 
 // MIDDLEWARES
 app.use(express.json())
-app.use(express.urlencoded({ extended : true }))
+app.use(express.urlencoded({ extended : false }))
 app.use(cors())
 
 
@@ -21,6 +21,9 @@ app.get("/",(req,res) => {
     res.status(200).json({ message: "home" })
 })
 
+app.post("/",(req,res) => {
+    res.send(req.body)
+})
 
  mongoose.connect(MONGO_URL).then(() => console.log('mongoDB connection successful..'))
 
