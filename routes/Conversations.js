@@ -9,6 +9,7 @@ router.post("/", async (req, res) => {
     if (walletaddress?.trim().length!==0 && receiver?.trim().length!==0) {
         try {
             const receiverAcc = await users.findOne({walletAddress:receiver})
+            console.log(receiverAcc)
             const sender = await users.findOne({walletAddress:walletaddress})
             const conversation = await Conversations.findOne({ members: [
                 {
@@ -42,7 +43,7 @@ router.post("/", async (req, res) => {
                     messages: []
                 })
                 await newConvo.save()
-                const conversations = await Conversations.findOne({ members: { $in: walletaddress } });
+                const conversations = await Conversations.findOne({ members: { $in: [{name:sender.name,address:walletaddress}] } });
                 res.status(201).json(conversations)
             }
         } catch (error) {
