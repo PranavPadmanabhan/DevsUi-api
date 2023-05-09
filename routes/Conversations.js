@@ -18,7 +18,8 @@ router.post("/", async (req, res) => {
                     messages: []
                 })
                 await newConvo.save()
-                const conversations = await Conversations.findOne({ members: { $in: [walletaddress] } });
+                const filtered = members.filter(item => item.address === walletaddress)
+                const conversations = await Conversations.findOne({ members: { $in: [filtered[0]] } });
                 res.status(201).json(conversations)
             }
         } catch (error) {
