@@ -9,7 +9,7 @@ const MONGO_URL=process.env.MONGO_URL;
 
 // MIDDLEWARES
 app.use(express.json())
-app.use(express.urlencoded({ extended : false }))
+app.use(express.urlencoded({ extended : true }))
 app.use(cors())
 
 

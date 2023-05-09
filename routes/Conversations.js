@@ -1,15 +1,20 @@
 const router = require('express').Router();
 const Conversations = require("../models/conversations")
 const { v4: uuidv4 } = require('uuid');
+const users = require('../models/users');
 
 
 router.post("/", async (req, res) => {
-    const { members, walletaddress } = req.body;
+    const { members, walletaddress,receiver } = req.body;
     if (members.length >= 2 && walletaddress) {
         try {
+            const receiverAcc = users.findOne({walletAddress:receiver})
             const conversation = await Conversations.findOne({ members: members });
             if (conversation) {
                 res.status(200).json({ error: "Conversation Exists" })
+            }
+            else if(!receiverAcc){
+                res.status(200).json({ error: "user not found!!" })
             }
             else {
                 const newConvo = new Conversations({
