@@ -8,7 +8,8 @@ router.post("/", async (req, res) => {
     const { members, walletaddress,receiver } = req.body;
     if (members.length >= 2 && walletaddress) {
         try {
-            const receiverAcc = users.findOne({walletAddress:receiver})
+            const receiverAcc = await users.findOne({walletAddress:receiver})
+            const sender = await users.findOne({walletAddress:walletaddress})
             const conversation = await Conversations.findOne({ members: members });
             if (conversation) {
                 res.status(200).json({ error: "Conversation Exists" })
@@ -19,7 +20,16 @@ router.post("/", async (req, res) => {
             else {
                 const newConvo = new Conversations({
                     conversationId: uuidv4(),
-                    members,
+                    members:[
+                        {
+                            name:sender.name,
+                            address:walletaddress
+                        },
+                        {
+                            name:receiverAcc.name,
+                            address:receiver
+                        }
+                    ],
                     messages: []
                 })
                 await newConvo.save()
