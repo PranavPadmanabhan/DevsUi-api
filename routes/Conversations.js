@@ -56,7 +56,7 @@ router.post("/", async (req, res) => {
 
 router.get("/:address", async(req, res) => {
     try {
-        const conversations = await Conversations.find({ members: { $in: [{address:req.params.address,name:req.query.name}] } });
+        const conversations = await Conversations.find({ members: { $in: [{name:req.query.name,address:req.params.address}] } });
         if(conversations){
             res.status(201).json(conversations)
         }
