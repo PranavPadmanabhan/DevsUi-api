@@ -5,8 +5,8 @@ const users = require('../models/users');
 
 
 router.post("/", async (req, res) => {
-    const { members, walletaddress,receiver } = req.body;
-    if (members.length >= 2 && walletaddress) {
+    const { walletaddress,receiver } = req.body;
+    if ( walletaddress &&receiver ) {
         try {
             const receiverAcc = await users.findOne({walletAddress:receiver})
             const sender = await users.findOne({walletAddress:walletaddress})
