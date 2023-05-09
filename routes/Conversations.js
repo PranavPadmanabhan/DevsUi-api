@@ -43,7 +43,7 @@ router.post("/", async (req, res) => {
                     messages: []
                 })
                 await newConvo.save()
-                const conversations = await Conversations.findOne({ members: { $in: [{name:sender.name,address:walletaddress}] } });
+                const conversations = await Conversations.find({ members: { $in: [{name:sender.name,address:walletaddress}] } });
                 res.status(201).json(conversations)
             }
         } catch (error) {
