@@ -9,7 +9,6 @@ router.post("/", async (req, res) => {
     if (walletaddress?.trim().length!==0 && receiver?.trim().length!==0) {
         try {
             const receiverAcc = await users.findOne({walletAddress:receiver})
-            console.log(receiverAcc)
             const sender = await users.findOne({walletAddress:walletaddress})
             const conversation = await Conversations.findOne({ members: [
                 {
