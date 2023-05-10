@@ -21,9 +21,6 @@ app.get("/",(req,res) => {
     res.status(200).json({ message: "home" })
 })
 
-app.post("/",(req,res) => {
-    res.send(req.body)
-})
 
  mongoose.connect(MONGO_URL).then(() => console.log('mongoDB connection successful..'))
 

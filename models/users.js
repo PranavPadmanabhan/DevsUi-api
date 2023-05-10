@@ -7,6 +7,10 @@ const userSchema = new mongoose.Schema({
     walletAddress: { type: String, unique:true, required: true },
     profileimage: { type: String },
     email: { type: String, unique: true, required: true },
+    role: { type:String },
+    bio:{ type:String },
+    coverImage:{ type:String },
+    DOB:{ type:String },
 })
 
 module.exports = mongoose.model("User", userSchema)
