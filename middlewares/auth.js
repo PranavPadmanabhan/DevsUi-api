@@ -79,9 +79,9 @@ const CheckUserName = async (req, res) => {
 
 
 const UpdateUser = async (req, res) => {
-    const { name, profileImage, bio, coverImage, dob } = req.body
+    const { name, profileImage, bio, coverImage, dob,role } = req.body
     const { address } = req.params
-    if (name || profileImage || bio || coverImage || dob) {
+    if (name || profileImage || bio || coverImage || dob || role) {
         const user = await User.findOne({ walletAddress:address })
         if (user) {
            user.name = name??user.name;
