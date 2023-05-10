@@ -88,6 +88,7 @@ const UpdateUser = async (req, res) => {
            user.profileimage = profileImage??user.profileimage;
            user.bio = bio??user.bio;
            user.coverImage = coverImage??user.coverImage;
+           user.role = role??user.role
            user.DOB = dob??user.DOB;
            const updatedUser = await user.save();
            res.status(201).json(updatedUser)
