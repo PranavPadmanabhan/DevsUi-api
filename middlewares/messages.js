@@ -15,6 +15,7 @@ const SendMessage = async(req, res) => {
             const conversation = await conversations.findOne({ conversationId});
             if(conversation){
                 conversation.messages = [...conversation.messages,newMessage];
+                conversation.timeStamp = Date.now()
             const conversationData = await conversation.save();
             res.status(201).json(conversationData)
             }

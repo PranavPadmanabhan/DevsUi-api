@@ -8,15 +8,9 @@ const CreateConversation = async (req, res) => {
         try {
             const receiverAcc = await users.findOne({walletAddress:receiver})
             const sender = await users.findOne({walletAddress:walletaddress})
-            const conversation = await Conversations.findOne({ members: [
-                {
-                    name:sender.name,
-                    address:walletaddress
-                },
-                {
-                    name:receiverAcc?.name,
-                    address:receiver
-                }
+            const conversation = await Conversations.findOne({ users: [
+                walletaddress,
+                receiver
             ] });
             if (conversation) {
                 res.status(200).json({ error: "Conversation Exists" })
@@ -27,20 +21,19 @@ const CreateConversation = async (req, res) => {
             else {
                 const newConvo = new Conversations({
                     conversationId: uuidv4(),
-                    members:[
-                        {
-                            name:sender.name,
-                            address:walletaddress
-                        },
-                        {
-                            name:receiverAcc.name,
-                            address:receiver
-                        }
+                    users:[
+                        walletaddress,
+                        receiver
                     ],
-                    messages: []
+                    details:[
+                        { ...sender },
+                        { ...receiverAcc }
+                    ],
+                    messages: [],
+                    timeStamp:Date.now()
                 })
                 await newConvo.save()
-                const conversations = await Conversations.find({ members: { $in: [{name:sender.name,address:walletaddress}] } });
+                const conversations = await Conversations.find({ users: { $in: [walletaddress] } });
                 res.status(201).json(conversations)
             }
         } catch (error) {
@@ -76,7 +69,7 @@ const GetConversation = async(req, res) => {
 
 const GetConversations = async(req, res) => {
     try {
-        const conversations = await Conversations.find({ members: { $in: [{name:req.query.name,address:req.params.address}] } });
+        const conversations = await Conversations.find({ users: { $in: [req.params.address] } });
         if(conversations){
             res.status(201).json(conversations)
         }
