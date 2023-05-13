@@ -16,7 +16,7 @@ const SendMessage = async (req, res) => {
             if (conversation) {
                 conversation.messages = [...conversation.messages, newMessage];
                 conversation.timeStamp = Date.now()
-                conversation.newMessageFrom = [...conversation.newMessageFrom, walletaddress]
+                conversation.newMessageFrom = [walletaddress]
                 const conversationData = await conversation.save();
                 res.status(201).json(conversationData)
             }
