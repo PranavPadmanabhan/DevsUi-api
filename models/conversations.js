@@ -7,6 +7,7 @@ const conversationSchema = new mongoose.Schema({
     details: { type: Array, required: true },
     messages: { type: Array, required: true },
     timeStamp: { type: Number, required: true },
+    newMessageFrom:{ type: [String], required: true },
 })
 
 module.exports = mongoose.model("Conversations", conversationSchema)

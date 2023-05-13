@@ -1,28 +1,28 @@
 const conversations = require('../models/conversations');
 const { v4: uuidv4 } = require('uuid');
 
-const SendMessage = async(req, res) => {
+const SendMessage = async (req, res) => {
     const { message, walletaddress } = req.body;
     const conversationId = req.params.conversationId
     if (message && walletaddress && conversationId) {
         try {
             const newMessage = {
-                messageId:uuidv4(),
+                messageId: uuidv4(),
                 message,
-                sender:walletaddress,
-                timestamp:Date.now(),
+                sender: walletaddress,
+                timestamp: Date.now(),
             }
-            const conversation = await conversations.findOne({ conversationId});
-            if(conversation){
-                conversation.messages = [...conversation.messages,newMessage];
+            const conversation = await conversations.findOne({ conversationId });
+            if (conversation) {
+                conversation.messages = [...conversation.messages, newMessage];
                 conversation.timeStamp = Date.now()
-            const conversationData = await conversation.save();
-            res.status(201).json(conversationData)
+                conversation.newMessageFrom = [...conversation.newMessageFrom, walletaddress]
+                const conversationData = await conversation.save();
+                res.status(201).json(conversationData)
             }
             else {
-                res.status(200).json({error:" Conversation Not Found!!"})
+                res.status(200).json({ error: " Conversation Not Found!!" })
             }
-
         } catch (error) {
 
         }
