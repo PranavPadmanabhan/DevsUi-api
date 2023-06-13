@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
     bio:{ type:String },
     coverImage:{ type:String },
     DOB:{ type:String },
+    isOnline: { type: Boolean }
 })
 
 module.exports = mongoose.model("User", userSchema)

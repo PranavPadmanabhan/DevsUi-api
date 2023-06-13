@@ -21,7 +21,8 @@ const SignUp = async (req, res) => {
                     name,
                     email,
                     userName: username,
-                    walletAddress: walletaddress
+                    walletAddress: walletaddress,
+                    isOnline:false
                 })
                 const userData = await newUser.save();
                 res.status(201).json(userData)
@@ -103,4 +104,23 @@ const UpdateUser = async (req, res) => {
     }
 }
 
-module.exports = { SignUp,Login,CheckUserName,UpdateUser }
+const getUser = async (req, res) => {
+    const { address } = req.params
+    if (address) {
+        const user = await User.findOne({ walletAddress:address })
+        if (user) {
+          
+           res.status(201).json(user)
+
+        }
+        else {
+            res.status(200).json({ message: "userName Not Found!! " })
+        }
+    }
+    else {
+        res.status(200).json({ error: "fields are missing!" })
+    }
+}
+
+
+module.exports = { SignUp,Login,CheckUserName,UpdateUser,getUser }
