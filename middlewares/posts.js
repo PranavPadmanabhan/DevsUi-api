@@ -4,7 +4,7 @@ const Users = require('../models/users.js')
 
 
 const AddPost = async (req, res) => {
-   const { content, type, image, walletaddress } = req.body;
+   const { content, type, images, walletaddress,jobRole } = req.body;
    if (type && content) {
       try {
          const user = await Users.findOne({ walletAddress: walletaddress })
@@ -13,12 +13,13 @@ const AddPost = async (req, res) => {
                postId: uuidv4(),
                type,
                content,
-               image: image ?? null,
+               jobRole:jobRole??null,
+               images: images ?? [],
                likes: [],
                comments: [],
                requested: [],
                createdAt: Date.now(),
-               createdBy: user.walletAddress
+               createdBy: user
             })
 
             const post = await newPost.save();
