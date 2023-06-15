@@ -3,8 +3,6 @@ const cors = require("cors")
 const mongoose = require("mongoose")
 require("dotenv").config()
 const Pusher = require("pusher")
-const socket = require('socket.io');
-const users = require('./models/users.js');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -67,27 +65,3 @@ db.once("open", () => {
 const server = app.listen(PORT, () => console.log(`app running at http://localhost:${PORT}`))
 
 
-const io = socket(server,{
-    cors:{
-        origin:[process.env.HOST]
-    }
-})
-
-io.on('connection', (socket) => {
-    socket.on('online', async(data) => { 
-       await users.updateOne({walletAddress:data},{
-            $set:{
-                isOnline:true
-            }
-        })
-    });
-
-    socket.on('offline', async(data) => { 
-        await users.updateOne({walletAddress:data},{
-             $set:{
-                 isOnline:false
-             }
-         })
-     });
-
-  });

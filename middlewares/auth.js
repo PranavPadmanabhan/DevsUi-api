@@ -80,9 +80,9 @@ const CheckUserName = async (req, res) => {
 
 
 const UpdateUser = async (req, res) => {
-    const { name, profileImage, bio, coverImage, dob,role } = req.body
+    const { name, profileImage, bio, coverImage, dob,role,isOnline } = req.body
     const { address } = req.params
-    if (name || profileImage || bio || coverImage || dob || role) {
+    if (name || profileImage || bio || coverImage || dob || role || isOnline) {
         const user = await User.findOne({ walletAddress:address })
         if (user) {
            user.name = name??user.name;
@@ -91,6 +91,7 @@ const UpdateUser = async (req, res) => {
            user.coverImage = coverImage??user.coverImage;
            user.role = role??user.role
            user.DOB = dob??user.DOB;
+           user.isOnline = isOnline??user.isOnline;
            const updatedUser = await user.save();
            res.status(201).json(updatedUser)
 
